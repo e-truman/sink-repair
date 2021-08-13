@@ -6,7 +6,7 @@ const applicationState = {
     requests: [],
 }
 
-
+const mainContainer = document.querySelector("#container")
 // this is fetching the data so that it is moved from application state.
 const API = "http://localhost:8088"
 
@@ -27,4 +27,33 @@ export const getRequests = () => {
     return applicationState.requests
 }
 
+
+
+
+export const sendRequest = (userServiceRequest) => {
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(userServiceRequest)
+    }
+
+
+    return fetch(`${API}/requests`, fetchOptions)
+    .then(response => response.json())
+    .then(() => {
+        mainContainer.dispatchEvent(new CustomEvent("stateChanged"))
+    })
+}
+
+
+export const deleteRequest = (id) => {
+    return fetch(`${API}/requests/${id}`, { method: "DELETE" })
+        .then(
+            () => {
+                mainContainer.dispatchEvent(new CustomEvent("stateChanged"))
+            }
+        )
+}
 
